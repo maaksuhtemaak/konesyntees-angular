@@ -1,10 +1,13 @@
-#stage 1 
-FROM node:latest as node
-WORKDIR /app
-copy . .
-run npm install
-run npm run build --prod
+#base image
+from node:12.2.0
 
-#stage 2
-from nginx:alpine
-copy --from=node /app/dist/konesyntees-app /usr/share/nginx/html
+workdir /app
+
+env PATH /app/node_modules/.bin:$PATH
+
+copy package.json /app/package.json
+run npm install
+run npm install -g @angular/cli@7.3.9
+
+copy . /app
+cmd ng serve
