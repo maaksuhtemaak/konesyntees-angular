@@ -1,7 +1,15 @@
 <body>
   
-<div class="top">
-  <h1>Kõnesüntees</h1>
+<div>
+  <form class="top">
+    <label for="serviceChoice">
+      Vali teenus, millele prompti mängida:
+    </label>
+    <select id="select" #choice name="serviceChoice">
+      <option value="Internet">Internet</option>
+      <option value="Mobiil-ID">Mobiil-ID</option>
+    </select>
+  </form>
 </div>
 <div class="middle">
   <textarea #textValue placeholder="Lisa tekst siia"></textarea>
@@ -9,8 +17,22 @@
 <div class="container">
   <div class="bottom">
     <input type="button" id="left" (click)="listenText(textValue.value)" value="Kuula">
-    <input type="button" id="right" (click)="saveText(textValue.value)" value="Avayasse">
+    <input type="button" id="right" (click)="saveText(textValue.value,choice.value)" value="Lisa prompt">
   </div>
+</div>
+
+<div>
+  <h2>Aktiivsed promptid:</h2>
+  <div class="prompts">
+    <ng-container *ngIf="prompts">
+    <div *ngFor="let prompt of prompts; let i = index;" class="prompt">
+        <div class="id">{{i+1}}</div>
+        <div class="service">{{prompt.service}}</div>
+        <div class="content">{{prompt.content}}</div>
+        <button class="delete" (click)="removePrompt(i)">Eemalda</button>
+    </div>
+</ng-container>
+</div>
 </div>
 
 </body>

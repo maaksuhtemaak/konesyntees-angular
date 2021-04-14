@@ -6,9 +6,7 @@ body {
 }
 
 .top {
-    background-color: blue;
     width: 100%;
-    color: white;
     text-align: center;
     padding-bottom: 0.8em;
     padding-top: 0.8em;
@@ -65,3 +63,34 @@ input[type=button] {
 #right {
     padding: 0.5em;
 }
+
+.prompt {
+    display: flex;
+    padding:1em 2em;
+    background-color: #FFF;
+    border-bottom: 1px solid #DDD;
+    border-top: 1px solid #DDD;
+}
+
+.prompt:nth-child(even) {
+    background-color: #EEE;
+}
+
+.prompt:last-of-type {
+    border-bottom: 0;
+}
+
+.prompt .id {
+    flex: 1 1 50px;
+}
+
+.prompt .service {
+    flex: 1 1 50px;
+}
+.prompt .service {
+    flex: 1 1 25%;
+}
+.prompt .content {
+    flex: 1 1 100%;
+}
+
