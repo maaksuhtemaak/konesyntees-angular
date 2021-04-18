@@ -1,6 +1,7 @@
 import { HttpClient, XhrFactory } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { Prompt } from './models/prompt';
+import { ServerService } from './server.service';
 
 @Component({
   selector: 'app-root',
@@ -9,38 +10,25 @@ import { Prompt } from './models/prompt';
 })
 export class AppComponent {
 
+  //hetkel neurokõne liidese url
   url = 'https://neurokone.cloud.ut.ee/api/v1.0/synthesize'; 
   prompts!:Prompt[];
   
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private server:ServerService) {
     }  
     
+  //tagastab kohe aktiivsed promptid andmebaasist 
   ngOnInit(): void {
-      //et oleks mingid ees olemas praegu
-      this.prompts = [
-        {id: 1,
-        service: 'Internet',
-        content: 'Maardus on üle õhu internetiga rike, eeldatav lahendusaeg kell 4',
-        active: true
-        },
-        {id: 2,
-          service: 'Mobiil-ID',
-          content: 'Mobiil-IDga on rike, mille lahendamine võtab aega',
-          active: false
-          }
-      ]
+      this.getEvents();
     }
   
-
-  
+    //kuulamiseks meetod, pole vaja midagi muuta
     listenText(item: string) {
-      console.log("Kuulab lauset: " + item);
       let postData = {
         'text': item,
-        'speaker_id': 1
+        'speaker_id': 4
       }
-
       this.http.post(this.url, postData, {responseType:'blob'}).toPromise().then(
         data => {
           let temp = window.webkitURL.createObjectURL(data);
@@ -49,16 +37,15 @@ export class AppComponent {
         })
     }
 
+    //salvestamise meetod
     saveText(item: string, service: string) {
       let postData = {
         'text': item,
-        'speaker_id': 1
+        'speaker_id': 4
       }
-      console.log("Lisab prompti tekstiga: " + item);
-      console.log("Teenus: "+ service);
       this.addPrompt(service, item);
     
-      /* praegu pole seda vaja veel
+      /* praegu pole seda vaja veel -> peab ümber tegema kuhugi suvalisse kohta salvestamisega
       this.http.post(this.url, postData, {responseType:'blob'}).toPromise().then(
         data => {
           let temp = window.webkitURL.createObjectURL(data);
@@ -73,22 +60,32 @@ export class AppComponent {
 
     }
 
+  //eemaldab prompti andmebaasist
   removePrompt(id:number) {
       this.prompts = this.prompts.filter((v,i) => i !== id);  
   }
 
+  //lisab prompti andmebaasi infoga
   addPrompt (promptService:string, promptMessage:string) {
-    this.prompts.push( {
-        id: this.getRandomId(),
-        service: promptService,
-        content: promptMessage,
-        active: true
+    const newPrompt = {
+      service: promptService,
+      prompt: promptMessage,
+      created: new Date(),
+      removed: null
+    };
+    this.server.createEvent(newPrompt).then(() => {
+        this.getEvents();
     });
   }
 
-   getRandomId() {
-    return Math.floor((Math.random()*6)+1);
-}
-
+  //tagastab ainult aktiivsed promptid, s.t remove on null
+  private getEvents() {
+    this.server.getEvents().then((response:any) => {
+      console.log('Response', response);
+      this.prompts = response.map((p:any) => {
+          return p;
+      });
+  });
+  }
     
 }
