@@ -7,6 +7,6 @@ CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
 Ja anda talle õigused:
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost' IDENTIFIED BY 'password';
 
-Rakenduse jooksutamiseks tuleb panna käsuviipa: "ng serve", mis avab pordil 4200 lokaalse rakenduse. Lisaks tuleb käivitada uues käsuviibas "npm src/index.js", mis paneb andmebaasi kuulama pordile 2700. 
+Rakenduse jooksutamiseks tuleb panna käsuviipa: "ng serve", mis avab pordil 4200 lokaalse rakenduse. Lisaks tuleb käivitada uues käsuviibas "node src/index.js", mis paneb andmebaasi kuulama pordile 2700. 
 
 Peale seda võiks kõik lokaalselt toimida.
