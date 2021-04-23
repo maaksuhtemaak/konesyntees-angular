@@ -6,12 +6,14 @@ const events = require('./events');
 
 const connection = mysql.createConnection({
   host     : 'localhost',
-  user     : 'markus',
-  password : 'password',
-  database : 'prompts'
+  user     : 'user',
+  password : 'password'
 });
 
 connection.connect();
+connection.query('CREATE DATABASE IF NOT EXISTS prompts;');
+connection.query('USE prompts;');
+connection.query('CREATE TABLE IF NOT EXISTS prompts (id integer auto_increment primary key, service varchar(100), prompt varchar(300), created datetime, removed datetime);');
 
 const port = process.env.PORT || 2700;
 

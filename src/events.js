@@ -38,7 +38,7 @@ function createRouter(db) {
 
   router.delete('/event/:id', function (req, res, next) {
     db.query(
-      'DELETE FROM prompts WHERE id=?',
+      'UPDATE prompts SET removed = now() WHERE id = ?',
       [req.params.id],
       (error) => {
         if (error) {

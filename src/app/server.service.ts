@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { resourceLimits } from 'node:worker_threads';
+import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 
 @Injectable({
@@ -19,8 +21,8 @@ export class ServerService {
       result.subscribe(resolve, reject);
     });
   }
-  
-  getEvents() {
+
+  getAllEvents() {
     return this.request('GET', `${environment.serverUrl}/event`)
   };
 
@@ -29,6 +31,8 @@ export class ServerService {
   };
 
   deleteEvent(event:any) {
-    return this.request('DELETE', `${environment.serverUrl}/event/${event.id}`);
+      const url = `${environment.serverUrl}/event/${event.id}`;
+      return this.request('DELETE', url);
   };
+
 }

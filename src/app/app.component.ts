@@ -1,5 +1,6 @@
 import { HttpClient, XhrFactory } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
+import { VirtualTimeScheduler } from 'rxjs';
 import { Prompt } from './models/prompt';
 import { ServerService } from './server.service';
 
@@ -20,7 +21,7 @@ export class AppComponent {
     
   //tagastab kohe aktiivsed promptid andmebaasist 
   ngOnInit(): void {
-      this.getEvents();
+      this.getAllActivePrompts();
     }
   
     //kuulamiseks meetod, pole vaja midagi muuta
@@ -44,25 +45,32 @@ export class AppComponent {
         'speaker_id': 4
       }
       this.addPrompt(service, item);
-    
-      /* praegu pole seda vaja veel -> peab ümber tegema kuhugi suvalisse kohta salvestamisega
+      //allalaadimine hetkel kohalikult
       this.http.post(this.url, postData, {responseType:'blob'}).toPromise().then(
         data => {
           let temp = window.webkitURL.createObjectURL(data);
           let a = document.createElement('a');
           a.setAttribute('hidden','');
           a.setAttribute('href',temp);
-          a.setAttribute('download','synteesitud_tekst');
+          a.setAttribute('download','synteesitud_tekst')
+          a.setAttribute('promptText',item);
+          a.setAttribute('service', service)
+          a.setAttribute('date', new Date().toString());
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-        })*/
+        })
 
     }
 
-  //eemaldab prompti andmebaasist
-  removePrompt(id:number) {
-      this.prompts = this.prompts.filter((v,i) => i !== id);  
+  //lisab promptile removed väärtuse
+  removePrompt(prompt:any) {
+    if (confirm('Kas soovid eemaldada?')) {
+      this.server.deleteEvent(prompt).then( () => {
+        this.getAllActivePrompts();
+        (err:any) => console.log(err)
+    });
+    }
   }
 
   //lisab prompti andmebaasi infoga
@@ -70,22 +78,20 @@ export class AppComponent {
     const newPrompt = {
       service: promptService,
       prompt: promptMessage,
-      created: new Date(),
+      created: new Date(), 
       removed: null
     };
     this.server.createEvent(newPrompt).then(() => {
-        this.getEvents();
+        this.getAllActivePrompts();
     });
   }
 
   //tagastab ainult aktiivsed promptid, s.t remove on null
-  private getEvents() {
-    this.server.getEvents().then((response:any) => {
-      console.log('Response', response);
+  private getAllActivePrompts() {
+    this.server.getAllEvents().then((response:any) => {
       this.prompts = response.map((p:any) => {
           return p;
       });
   });
   }
-    
 }
