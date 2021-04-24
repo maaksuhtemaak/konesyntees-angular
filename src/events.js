@@ -37,7 +37,7 @@ function createRouter(db) {
   });
 
   //metadata jaoks - randomId põhjal saadav info
-  router.get('event/:id', function (req, res, next) {
+  router.get('/event/:id', function (req, res, next) {
     db.query('SELECT id, service, prompt, created FROM prompts where randomid = ?',
       [req.params.randomid],
       (error, results) => {
