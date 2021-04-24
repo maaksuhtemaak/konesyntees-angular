@@ -12,7 +12,7 @@ Peale seda võiks eelneva päringuga tulla info ja on vaja alla tõmmata Angular
 npm install -g @angular/cli
 ```
 
-Käivitamiseks on vaja seadistada andmebaas (autor kasutas lokaalselt MariaDb'i (Windowsis: https://mariadb.org/download/, peale mida tuleks avada MySQL client; MacOS'il on eelduseks brew olemasolu ja saab alla laadida sisestades käsuviipa: ```brew services start mariadb```, peale mida tuleks panna käsuviibale: ```sudo mysql -u root```). Seal teha kasutaja päringuga: 
+Käivitamiseks on vaja seadistada andmebaas (autor kasutas lokaalselt MariaDb'i (Windowsis: https://mariadb.org/download/, peale mida tuleks avada MySQL client; MacOS'il on eelduseks brew olemasolu ja saab alla laadida sisestades käsuviipa: ```brew install mariadb```, peale mida tuleks panna käsuviibale: ```brew services start mariadb``` ja ```sudo mysql -u root```). Seal teha kasutaja päringuga: 
 ```
 CREATE USER 'user'@'localhost' IDENTIFIED BY 'password'; 
 ```
