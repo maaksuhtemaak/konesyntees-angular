@@ -1,6 +1,6 @@
 import { HttpClient, XhrFactory } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { VirtualTimeScheduler } from 'rxjs';
+import { linkSync } from 'node:fs';
 import { Prompt } from './models/prompt';
 import { ServerService } from './server.service';
 
@@ -40,27 +40,28 @@ export class AppComponent {
 
     //salvestamise meetod
     saveText(item: string, service: string) {
+      if (!item) {
+        alert('Tekst lisamata');
+        return;
+      }
+  
       let postData = {
         'text': item,
         'speaker_id': 4
-      }
-      this.addPrompt(service, item);
-      //allalaadimine hetkel kohalikult
+      };
+
+      let prompt = this.addPrompt(service, item);
+
       this.http.post(this.url, postData, {responseType:'blob'}).toPromise().then(
         data => {
-          let temp = window.webkitURL.createObjectURL(data);
-          let a = document.createElement('a');
-          a.setAttribute('hidden','');
-          a.setAttribute('href',temp);
-          a.setAttribute('download','synteesitud_tekst')
-          a.setAttribute('promptText',item);
-          a.setAttribute('service', service)
-          a.setAttribute('date', new Date().toString());
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        })
-
+          const link = window.document.createElement('a');
+          link.href = window.URL.createObjectURL(data);
+          link.download = prompt.randomid;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(link.href);
+        });
     }
 
   //lisab promptile removed väärtuse
@@ -77,6 +78,7 @@ export class AppComponent {
   addPrompt (promptService:string, promptMessage:string) {
     const newPrompt = {
       service: promptService,
+      randomid: this.getRandomID(),
       prompt: promptMessage,
       created: new Date(), 
       removed: null
@@ -84,6 +86,7 @@ export class AppComponent {
     this.server.createEvent(newPrompt).then(() => {
         this.getAllActivePrompts();
     });
+    return newPrompt;
   }
 
   //tagastab ainult aktiivsed promptid, s.t remove on null
@@ -91,7 +94,12 @@ export class AppComponent {
     this.server.getAllEvents().then((response:any) => {
       this.prompts = response.map((p:any) => {
           return p;
-      });
-  });
+        });
+     });
+  }
+
+  //random id
+  private getRandomID() {
+    return '_'+ Math.random().toString(36).substring(2,9);
   }
 }

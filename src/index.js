@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 connection.connect();
 connection.query('CREATE DATABASE IF NOT EXISTS prompts;');
 connection.query('USE prompts;');
-connection.query('CREATE TABLE IF NOT EXISTS prompts (id integer auto_increment primary key, service varchar(100), prompt varchar(300), created datetime, removed datetime);');
+connection.query('CREATE TABLE IF NOT EXISTS prompts (id integer auto_increment primary key,randomid varchar(10) unique, service varchar(100), prompt varchar(300), created datetime, removed datetime);');
 
 const port = process.env.PORT || 2700;
 

@@ -8,8 +8,8 @@ function createRouter(db) {
 
   router.post('/event', (req, res, next) => {
     db.query(
-      'INSERT INTO prompts (service, prompt, created, removed) VALUES (?,?,?,?)',
-      [req.body.service, req.body.prompt, new Date(req.body.created), req.body.removed],
+      'INSERT INTO prompts (randomid, service, prompt, created, removed) VALUES (?,?,?,?,?)',
+      [req.body.randomid, req.body.service, req.body.prompt, new Date(req.body.created), req.body.removed],
       (error) => {
         if (error) {
           console.error(error);
