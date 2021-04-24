@@ -51,12 +51,13 @@ export class AppComponent {
       };
 
       let prompt = this.addPrompt(service, item);
-
+      
+      //lokaalne allalaadimine
       this.http.post(this.url, postData, {responseType:'blob'}).toPromise().then(
         data => {
           const link = window.document.createElement('a');
           link.href = window.URL.createObjectURL(data);
-          link.download = prompt.randomid;
+          link.download = prompt.randomid; //failinimi === andmebaasis metadata randomId
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
