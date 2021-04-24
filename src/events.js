@@ -36,6 +36,20 @@ function createRouter(db) {
     );
   });
 
+  //metadata jaoks - randomId põhjal saadav info
+  router.get('event/:id', function (req, res, next) {
+    db.query('SELECT id, service, prompt, created FROM prompts where randomid = ?',
+      [req.params.randomid],
+      (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({status: 'error'});
+        } else {
+          res.status(200).json(results);
+        }
+      });
+  });
+
   router.delete('/event/:id', function (req, res, next) {
     db.query(
       'UPDATE prompts SET removed = now() WHERE id = ?',
